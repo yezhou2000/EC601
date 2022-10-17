@@ -1,0 +1,85 @@
+from curses.ascii import US
+from turtle import pu
+import tweepy
+import configparser
+import pandas as pd
+import openai
+openai.api_key="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"
+
+## read configs
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+api_key = config['twitter']['API_KEY']
+api_key_secret = config['twitter']['API_KEY_secret']
+
+access_token = config['twitter']['Access_token']
+access_token_secret = config['twitter']['Access_token_secret']
+
+#print(api_key)
+
+
+## authentication
+
+auth = tweepy.OAuth1UserHandler(api_key,api_key_secret)
+auth.set_access_token(access_token,access_token_secret)
+
+api = tweepy.API(auth)
+
+query = '(Tesla motors -media) AND (electric cars -is:retweet) AND -link'
+public_tweets2 = api.search_tweets(query, max_results=, place_fields=US)
+#print(public_tweets2[0].text)
+
+#public_tweets = api.home_timeline()
+# print(public_tweets[0].created_at)
+# print(public_tweets[0].user.screen_name)
+# print(public_tweets[0].text)
+
+# columns = ['Time','User','Tweet']
+# data = []
+
+# for tweet in public_tweets:
+#     data.append([tweet.created_at, tweet.user.screen_name, tweet.text])
+
+
+# data_frame = pd.DataFrame(data,columns=columns)
+
+# data_frame.to_csv('tweets.csv')
+
+# print(data_frame)
+
+# columns = ['Time','User','Tweet']
+# data = []
+
+# for tweet in public_tweets2:
+#     data.append([tweet.created_at, tweet.user.screen_name, tweet.text])
+
+
+# data_frame = pd.DataFrame(data,columns=columns)
+
+# data_frame.to_csv('tweets2.csv')
+
+# print(data_frame)
+
+columns = ['text']
+data = []
+
+for tweet in public_tweets2:
+    
+    data.append(tweet.text)
+
+# df = pd.DataFrame(data,columns=columns)
+# df.to_json(orient="records",force_ascii=False)
+# print(df)
+
+for tweet in data:
+    response = openai.Completion.create(
+    engine="davinci",
+    prompt=twee,
+    temperature=0.3,
+    max_tokens=60,
+    top_p=1.0,
+    frequency_penalty=0.5,
+    presence_penalty=0.0,
+    stop=["###"])
+    print (response)
